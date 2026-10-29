@@ -7,9 +7,14 @@ import org.example.javalibrarywithjwt.model.User;
 import org.example.javalibrarywithjwt.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 @Transactional
@@ -59,6 +64,31 @@ public class UserService {
 
     //Metod letar upp anvöndare med hashat lösenord och skapar samt signerar token
     public LoginResponse login (LoginRequest loginRequest) {
+
+        User user = userRepository.findByUsername(loginRequest.getUsername())
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.UNAUTHORIZED,
+                                "Username not found!"
+                        ));
+        if (!passwordEncoder.matches(loginRequest.getPassword(),
+                user.getPassword())) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Invalid username or password!");
+        }
+
+        Instant now = Instant.now();
+
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .subject(user.getUsername())
+                .issuedAt(now)
+                .expiresAt(now.plus(1, ChronoUnit.HOURS))
+                .claim("roles", List.of(user.getRole()))
+                .build();
+
+
+
 
     }
 
