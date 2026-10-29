@@ -2,16 +2,20 @@ package org.example.javalibrarywithjwt.model;
 
 public class LoginResponse {
 
-    private String Token;
+    private String token;
 
     public LoginResponse() {
     }
 
+    public LoginResponse(String token) {
+        this.token = token;
+    }
+
     public String getToken() {
-        return Token;
+        return token;
     }
 
     public void setToken(String token) {
-        Token = token;
+        token = token;
     }
 }

@@ -7,8 +7,11 @@ import org.example.javalibrarywithjwt.model.User;
 import org.example.javalibrarywithjwt.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -69,7 +72,7 @@ public class UserService {
                 .orElseThrow(() ->
                         new ResponseStatusException(
                                 HttpStatus.UNAUTHORIZED,
-                                "Username not found!"
+                                "Invalid username or password!"
                         ));
         if (!passwordEncoder.matches(loginRequest.getPassword(),
                 user.getPassword())) {
@@ -87,8 +90,15 @@ public class UserService {
                 .claim("roles", List.of(user.getRole()))
                 .build();
 
+        JwsHeader header = JwsHeader.with(MacAlgorithm.HS256)
+                .type("JWT")
+                .build();
 
+        String token = jwtEncoder.encode(
+                JwtEncoderParameters.from(header, claims)
+        ).getTokenValue();
 
+        return new LoginResponse(token);
 
     }
 
