@@ -1,6 +1,8 @@
 package org.example.javalibrarywithjwt.service;
 
 import jakarta.transaction.Transactional;
+import org.example.javalibrarywithjwt.model.LoginRequest;
+import org.example.javalibrarywithjwt.model.LoginResponse;
 import org.example.javalibrarywithjwt.model.User;
 import org.example.javalibrarywithjwt.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -54,4 +56,10 @@ public class UserService {
         return userRepository.save(user);
 
     }
+
+    //Metod letar upp anvöndare med hashat lösenord och skapar samt signerar token
+    public LoginResponse login (LoginRequest loginRequest) {
+
+    }
+
 }
