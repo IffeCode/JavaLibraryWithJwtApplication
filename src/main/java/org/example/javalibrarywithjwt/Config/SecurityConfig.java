@@ -1,7 +1,6 @@
 package org.example.javalibrarywithjwt.Config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import org.hibernate.validator.internal.util.stereotypes.Immutable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,16 +25,19 @@ public class SecurityConfig {
             "change-this-secret-key-before-production-123456789";
 
     @Bean
+    //Hashar lösenordet
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    //Skapar en secretKey
     @Bean
     public SecretKey jwtSecretKey() {
         return new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8),
                 "HmacSHA256");
     }
 
+    //Verifierar Token
     @Bean
     public JwtDecoder jwtDecoder(SecretKey jwtSecretKey) {
 
@@ -44,6 +46,7 @@ public class SecurityConfig {
                 .build();
     }
 
+    //Skapar token
     @Bean
     public JwtEncoder jwtEncoder(SecretKey jwtSecretKey) {
         return new NimbusJwtEncoder(
@@ -51,6 +54,7 @@ public class SecurityConfig {
         );
     }
 
+    //Regler för API:et
     @Bean
     public org.springframework.security.web.SecurityFilterChain securityFilterChain(
             HttpSecurity http) throws Exception {

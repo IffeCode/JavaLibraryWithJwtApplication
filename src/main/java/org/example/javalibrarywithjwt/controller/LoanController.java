@@ -37,7 +37,7 @@ public class LoanController {
     public Loan borrowLoan(@Valid @RequestBody BorrowRequest borrowRequest) {
         //Kopplar in autentiserade användare med JWT
         throw new UnsupportedOperationException(
-                "JWT authentication must be implpemented before borrowing!"
+                "JWT authentication must be implemented before borrowing!"
         );
     }
 
