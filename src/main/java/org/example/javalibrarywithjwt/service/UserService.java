@@ -5,6 +5,7 @@ import org.example.javalibrarywithjwt.model.User;
 import org.example.javalibrarywithjwt.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,10 +17,15 @@ public class UserService {
 
     private PasswordEncoder passwordEncoder;
 
+    private JwtEncoder jwtEncoder;
+
     public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       JwtEncoder jwtEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtEncoder = jwtEncoder;
+
     }
 
     //Registrera en ny användare
