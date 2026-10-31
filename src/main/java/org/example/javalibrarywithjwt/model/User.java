@@ -25,7 +25,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @NotBlank(message = "Role cannot be empty!")
+
     @Column(nullable = false)
     private String role = "USER";
 

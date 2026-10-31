@@ -1,7 +1,9 @@
 package org.example.javalibrarywithjwt.service;
 
 import jakarta.transaction.Transactional;
+import org.example.javalibrarywithjwt.model.Author;
 import org.example.javalibrarywithjwt.model.Book;
+import org.example.javalibrarywithjwt.repository.AuthorRepository;
 import org.example.javalibrarywithjwt.repository.BookRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,9 +16,11 @@ import java.util.List;
 public class BookService {
 
     private BookRepository bookRepository;
+    private AuthorRepository authorRepository;
 
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
         this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
     }
 
     //Listar alla böcker
@@ -37,6 +41,14 @@ public class BookService {
     //Skapar en ny bok
     public Book create(Book book) {
         book.setId(null);
+
+        Author author = authorRepository.findById(book.getAuthor().getId())
+                .orElseThrow(()->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Author not found!"));
+
+        book.setAuthor(author);
+
         return bookRepository.save(book);
     }
 

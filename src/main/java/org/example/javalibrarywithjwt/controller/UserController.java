@@ -1,6 +1,8 @@
 package org.example.javalibrarywithjwt.controller;
 
 import jakarta.validation.Valid;
+import org.example.javalibrarywithjwt.model.LoginRequest;
+import org.example.javalibrarywithjwt.model.LoginResponse;
 import org.example.javalibrarywithjwt.model.User;
 import org.example.javalibrarywithjwt.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -22,4 +24,12 @@ public class UserController {
     public User register(@Valid @RequestBody User user) {
         return userService.register(user);
     }
+
+    //Användaren kan logga in
+    @PostMapping("/login")
+    public LoginResponse login(@Valid @RequestBody LoginRequest loginRequest) {
+        return userService.login(loginRequest);
+    }
+
+
 }
