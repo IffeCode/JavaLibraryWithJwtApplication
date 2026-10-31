@@ -54,7 +54,7 @@ public class SecurityConfig {
         );
     }
 
-    //Regler för API:et
+    //Regler för API:et - vem får åtkomst till API:et och hur användaren autentiseras
     @Bean
     public org.springframework.security.web.SecurityFilterChain securityFilterChain(
             HttpSecurity http) throws Exception {
@@ -62,22 +62,52 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session
+                        // STATELESS innebär att servern inte sparar användarsessioner.
+                        // Varje request måste innehålla ett giltigt JWT-token.
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // Bestämmer vilka användare som får komma åt olika endpoints.
                 .authorizeHttpRequests(auth -> auth
+
+                        // Alla får registrera sig och logga in.
+                        // Användaren behöver alltså inget JWT-token här.
                         .requestMatchers("/api/users/register", "/api/users/login")
                         .permitAll()
+
+
+                        // USER och ADMIN får läsa böcker och författare.
+                        // GET används för att hämta information.
+                        // ** innebär att alla underliggande endpoints inkluderas.
                         .requestMatchers(HttpMethod.GET, "/api/books/**", "/api/authors/**")
                         .hasAnyRole("USER", "ADMIN")
+
+                        // Endast ADMIN får skapa nya böcker.
+                        // POST används för att skapa resurser.
                         .requestMatchers(HttpMethod.POST, "/api/books/**")
                         .hasRole("ADMIN")
+
+                        // Endast ADMIN får uppdatera böcker.
+                        // PUT används för att uppdatera befintliga resurser.
                         .requestMatchers(HttpMethod.PUT, "/api/books/**")
                         .hasRole("ADMIN")
+
+                        // Endast ADMIN får radera böcker.
+                        // DELETE används för att ta bort resurser.
                         .requestMatchers(HttpMethod.DELETE, "/api/books/**")
                         .hasRole("ADMIN")
+
+
+                        // Alla andra endpoints kräver att användaren är inloggad. Exempelvis lånefunktioner.
                         .anyRequest()
                         .authenticated())
+
+                /*
+                Aktiverar JWT-autentisering. Spring Security läser token från Authorization-header,
+                kontrollerar token med JwtDecoder och autentiserar användaren.
+                 */
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
+        // Bygger och returnerar den färdiga säkerhetskonfigurationen.
         return http.build();
     }
 }
