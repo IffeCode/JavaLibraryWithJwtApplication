@@ -72,7 +72,11 @@ public class BookService {
             existingBook.setDescription(book.getDescription());
         }
         if (book.getAuthor() != null) {
-            existingBook.setAuthor(book.getAuthor());
+            Author author = authorRepository.findById(book.getAuthor().getId())
+                    .orElseThrow(()-> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Author not found!"
+            ));
+            existingBook.setAuthor(author);
         }
 
         return bookRepository.save(existingBook);
