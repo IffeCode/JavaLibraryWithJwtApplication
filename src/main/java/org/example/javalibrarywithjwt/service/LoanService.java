@@ -7,6 +7,7 @@ import org.example.javalibrarywithjwt.model.Loan;
 import org.example.javalibrarywithjwt.model.User;
 import org.example.javalibrarywithjwt.repository.BookRepository;
 import org.example.javalibrarywithjwt.repository.LoanRepository;
+import org.example.javalibrarywithjwt.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -21,10 +22,14 @@ public class LoanService {
 
     private LoanRepository loanRepository;
     private BookRepository bookRepository;
+    private UserRepository userRepository;
 
-    public LoanService(LoanRepository loanRepository, BookRepository bookRepository) {
+    public LoanService(LoanRepository loanRepository,
+                       BookRepository bookRepository,
+                       UserRepository userRepository) {
         this.loanRepository = loanRepository;
         this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Loan> findAll() {
